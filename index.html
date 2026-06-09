@@ -1,1 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzería Bella Ciao - Pedidos</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --pizza-red: #d32f2f;
+            --pizza-green: #388e3c;
+            --text-dark: #212121;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding-bottom: 100px;
+        }
+
+        header {
+            background-color: var(--pizza-red);
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+            border-bottom: 4px solid var(--pizza-green);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .menu-container {
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .pizza-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pizza-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #ccc;
+        }
+
+        .pizza-info {
+            padding: 15px;
+        }
+
+        .pizza-nombre {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--pizza-red);
+            margin-bottom: 5px;
+        }
+
+        .pizza-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .pizza-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pizza-precio {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .contador {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-cant {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cantidad-num {
+            font-size: 1.1rem;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .barra-pedido {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            z-index: 1000;
+        }
+
+        .total-info p {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--pizza-green);
+        }
+
+        .btn-enviar-wa {
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍕 Pizzería Bella Ciao</h1>
+        <p>Armá tu pedido y mandalo directo por WhatsApp</p>
+    </header>
+
+    <div class="menu-container">
+
+        <div class="pizza-card" data-id="1" data-nombre="Muzzarella" data-precio="8000">
+            <img src="https://picsum.photos/id/1080/500/300" alt="Pizza Muzzarella" class="pizza-img">
+            <div class="pizza-info">
+                <div class="pizza-nombre">Muzzarella Tradicional</div>
+                <div class="pizza-desc">Salsa de tomate de la casa, abundante muzzarella de primera calidad, aceitunas verdes y orégano fresco.</div>
+                <div class="pizza-control">
+                    <div class="pizza-precio">$8.000</div>
+                    <div class="contador">
+                        <button class="btn-cant" onclick="restar(this)">-</button>
+                        <div class="cantidad-num">0</div>
+                        <button class="btn-cant" onclick="sumar(this)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pizza-card" data-id="2" data-nombre="Fugazzeta" data-precio="9500">
+            <img src="https://picsum.photos/id/1080/500/300" alt="Pizza Fugazzeta" class="pizza-img">
+            <div class="pizza-info">
+                <div class="pizza-nombre">Fugazzeta Especial</div>
+                <div class="pizza-desc">Colchón de cebolla marinada, doble porción de muzzarella, jamón cocido y un toque de oliva.</div>
+                <div class="pizza-control">
+                    <div class="pizza-precio">$9.500</div>
+                    <div class="contador">
+                        <button class="btn-cant" onclick="restar(this)">-</button>
+                        <div class="cantidad-num">0</div>
+                        <button class="btn-cant" onclick="sumar(this)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="barra-pedido">
+        <div class="total-info">
+            <span style="font-size:0.8rem; color:#666;">Total:</span>
+            <p id="total-html">$0</p>
+        </div>
+        <a href="#" id="link-wa" target="_blank" rel="noopener noreferrer" class="btn-enviar-wa" onclick="enviarPedido(event)">
+            <i class="fab fa-whatsapp"></i> Enviar Pedido
+        </a>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN: Poné acá tu número real de WhatsApp (ejemplo: 5491123456789)
+        const TELEFONO_LOCAL = "5491100000000"; 
+
+        let carrito = {};
+
+        function sumar(btn) {
+            const card = btn.closest('.pizza-card');
+            const id = card.getAttribute('data-id');
+            const nombre = card.getAttribute('data-nombre');
+            const precio = parseInt(card.getAttribute('data-precio'));
+            const cantElemento = card.querySelector('.cantidad-num');
+            
+            if (!carrito[id]) {
+                carrito[id] = { nombre: nombre, precio: precio, cantidad: 0 };
+            }
+            
+            carrito[id].cantidad++;
+            cantElemento.innerText = carrito[id].cantidad;
+            calcularTotal();
+        }
+
+        function restar(btn) {
+            const card = btn.closest('.pizza-card');
+            const id = card.getAttribute('data-id');
+            const cantElemento = card.querySelector('.cantidad-num');
+            
+            if (carrito[id] && carrito[id].cantidad > 0) {
+                carrito[id].cantidad--;
+                cantElemento.innerText = carrito[id].cantidad;
+                
+                if (carrito[id].cantidad === 0) {
+                    delete carrito[id];
+                }
+                calcularTotal();
+            }
+        }
+
+        function calcularTotal() {
+            let total = 0;
+            for (const id in carrito) {
+                total += carrito[id].precio * carrito[id].cantidad;
+            }
+            document.getElementById('total-html').innerText = `$${total}`;
+        }
+
+        function enviarPedido(event) {
+            if (Object.keys(carrito).length === 0) {
+                event.preventDefault();
+                alert("Por favor, selecciona al menos una pizza.");
+                return;
+            }
+
+            let mensaje = "¡Hola! 🍕 Quiero hacer el siguiente pedido:\n\n";
+            let total = 0;
+
+            for (const id in carrito) {
+                let subtotal = carrito[id].precio * carrito[id].cantidad;
+                mensaje += `• ${carrito[id].cantidad}x ${carrito[id].nombre} -> $${subtotal}\n`;
+                total += subtotal;
+            }
+
+            mensaje += `\n*TOTAL: $${total}*`;
+            
+            let link = document.getElementById('link-wa');
+            link.href = "https://wa.me/" + TELEFONO_LOCAL + "?text=" + encodeURIComponent(mensaje);
+        }
+    </script>
+</body>
+</html>
