@@ -92,6 +92,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 12px;
         }
 
         .pizza-precio {
@@ -124,6 +125,20 @@
             font-weight: bold;
             min-width: 20px;
             text-align: center;
+        }
+
+        .pizza-notas {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            resize: none;
+            outline: none;
+        }
+
+        .pizza-notas:focus {
+            border-color: var(--pizza-red);
         }
 
         .barra-pedido {
@@ -173,6 +188,7 @@
 
     <div class="menu-container">
 
+        <!-- PIZZA 1: MUZZARELLA -->
         <div class="pizza-card" data-id="1" data-nombre="Muzzarella" data-precio="8000">
             <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=500&h=300&fit=crop" alt="Pizza Muzzarella" class="pizza-img">
             <div class="pizza-info">
@@ -186,11 +202,13 @@
                         <button class="btn-cant" onclick="sumar(this)">+</button>
                     </div>
                 </div>
+                <input type="text" class="pizza-notas" placeholder="Aclaraciones (ej: sin aceitunas, bien cocida...)">
             </div>
         </div>
 
+        <!-- PIZZA 2: FUGAZZETA -->
         <div class="pizza-card" data-id="2" data-nombre="Fugazzeta" data-precio="9500">
-            <img src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?q=80&w=500&h=300&fit=crop" alt="Pizza Fugazzetta" class="pizza-img">
+            <img src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?q=80&w=500&h=300&fit=crop" alt="Pizza Fugazzeta" class="pizza-img">
             <div class="pizza-info">
                 <div class="pizza-nombre">Fugazzeta Especial</div>
                 <div class="pizza-desc">Colchón de cebolla marinada, doble porción de muzzarella, jamón cocido y un toque de oliva.</div>
@@ -202,22 +220,25 @@
                         <button class="btn-cant" onclick="sumar(this)">+</button>
                     </div>
                 </div>
+                <input type="text" class="pizza-notas" placeholder="Aclaraciones para la fugazzeta...">
             </div>
         </div>
 
-         <div class="pizza-card" data-id="3" data-nombre="peperoni" data-precio="9500">
+        <!-- PIZZA 3: PEPPERONI -->
+        <div class="pizza-card" data-id="3" data-nombre="Pepperoni" data-precio="9900">
             <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=500&h=300&fit=crop" alt="Pizza de Pepperoni" class="pizza-img">
             <div class="pizza-info">
-                <div class="pizza-nombre">Peperoni especial</div>
+                <div class="pizza-nombre">Pepperoni Crocante</div>
                 <div class="pizza-desc">Lluvia de pepperoni crocante y especiado, base de salsa de tomate artesanal, doble porción de muzzarella fundida y un sutil toque de orégano fresco.</div>
                 <div class="pizza-control">
-                    <div class="pizza-precio">$9.500</div>
+                    <div class="pizza-precio">$9.900</div>
                     <div class="contador">
                         <button class="btn-cant" onclick="restar(this)">-</button>
                         <div class="cantidad-num">0</div>
                         <button class="btn-cant" onclick="sumar(this)">+</button>
                     </div>
                 </div>
+                <input type="text" class="pizza-notas" placeholder="Aclaraciones para la de pepperoni...">
             </div>
         </div>
 
@@ -247,7 +268,7 @@
             const cantElemento = card.querySelector('.cantidad-num');
             
             if (!carrito[id]) {
-                carrito[id] = { nombre: nombre, precio: precio, cantidad: 0 };
+                carrito[id] = { nombre: nombre, precio: precio, cantidad: 0, notas: "" };
             }
             
             carrito[id].cantidad++;
@@ -276,7 +297,7 @@
             for (const id in carrito) {
                 total += carrito[id].precio * carrito[id].cantidad;
             }
-            document.getElementById('total-html').innerText = `$${total}`;
+            document.getElementById('total-html').innerText = `$${total.toLocaleString('es-AR')}`;
         }
 
         function enviarPedido(event) {
@@ -286,16 +307,31 @@
                 return;
             }
 
+            // Capturar las aclaraciones de los inputs antes de armar el mensaje
+            document.querySelectorAll('.pizza-card').forEach(card => {
+                const id = card.getAttribute('data-id');
+                const notasValue = card.querySelector('.pizza-notas').value.trim();
+                if (carrito[id]) {
+                    carrito[id].notes = notasValue; 
+                }
+            });
+
             let mensaje = "¡Hola! 🍕 Quiero hacer el siguiente pedido:\n\n";
             let total = 0;
 
             for (const id in carrito) {
                 let subtotal = carrito[id].precio * carrito[id].cantidad;
-                mensaje += `• ${carrito[id].cantidad}x ${carrito[id].nombre} -> $${subtotal}\n`;
+                mensaje += `• ${carrito[id].cantidad}x ${carrito[id].nombre} -> $${subtotal.toLocaleString('es-AR')}\n`;
+                
+                // Si el cliente escribió alguna aclaración, se suma abajo del producto
+                if (carrito[id].notes) {
+                    mensaje += `  └ _Nota: ${carrito[id].notes}_\n`;
+                }
+                
                 total += subtotal;
             }
 
-            mensaje += `\n*TOTAL: $${total}*`;
+            mensaje += `\n*TOTAL A PAGAR: $${total.toLocaleString('es-AR')}*`;
             
             let link = document.getElementById('link-wa');
             link.href = "https://wa.me/" + TELEFONO_LOCAL + "?text=" + encodeURIComponent(mensaje);
